@@ -18,7 +18,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    // Get the primary monitor
+    // Get the primary monito1r
     GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
 
     // Get the video mode of the primary monitor
