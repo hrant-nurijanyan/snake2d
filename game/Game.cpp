@@ -1,7 +1,7 @@
 #include "Game.hpp"
 
 bebop::snake2d::game::Game::Game(int width, int height)
-    : width(width), height(height), snake({5, 10}, {1, 0}, 5), window(width, height, "Snake2d")
+    : width(width), height(height), snake({10, 10}, {1, 0}, 5), window(width, height, "Snake2d")
 {
     int spawned = 0;
     while (spawned < FRUIT_COUNT)
@@ -58,7 +58,7 @@ void bebop::snake2d::game::Game::run()
             continue;
         }
 
-        if (snake.eatsItself())
+        if (snake.eatsItself() || checkSnakeCollisionWithWalls())
         {
             state = GameState::GAME_OVER;
             continue;
@@ -88,6 +88,15 @@ void bebop::snake2d::game::Game::run()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));  // ~60 FPS
     }
+}
+
+bool bebop::snake2d::game::Game::checkSnakeCollisionWithWalls()
+{
+    const int GRID_WIDTH = width / (CIRCLE_RADIUS * 2);
+    const int GRID_HEIGHT = height / (CIRCLE_RADIUS * 2);
+
+    const auto& head = snake.head();
+    return head.x < 0 || head.x >= GRID_WIDTH || head.y < 0 || head.y >= GRID_HEIGHT;
 }
 
 int bebop::snake2d::game::Game::snakeEatsFruit()

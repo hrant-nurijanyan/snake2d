@@ -45,6 +45,11 @@ struct Game
     static constexpr auto TEXT_COLOR = 0xFFFFFFFF;
 
     /**
+     * Checks whether the snake hits the walls(the edge of the screen)
+     */
+    bool checkSnakeCollisionWithWalls();
+
+    /**
      * Check whether the snake eats a fruit
      * @returns The index of the fruit its going to eat, and -1 if no fruit is eaten
      */
