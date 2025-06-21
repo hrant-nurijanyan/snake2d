@@ -38,13 +38,19 @@ void bebop::snake2d::game::Game::run()
                     case XK_Right:
                         snake.setDirection({1, 0});
                         break;
+                    case XK_p:
+                        state =
+                            state == GameState::PLAYING ? GameState::PAUSED : GameState::PLAYING;
+                        break;
                     case XK_r:
+                        if (state != GameState::GAME_OVER)
+                            break;
                         restart();
                         break;
                 }
             });
 
-        if (isGameOver)
+        if (state == GameState::GAME_OVER)
         {
             gameOver();
             window.update();
@@ -54,7 +60,7 @@ void bebop::snake2d::game::Game::run()
 
         if (snake.eatsItself())
         {
-            isGameOver = true;
+            state = GameState::GAME_OVER;
             continue;
         }
 
@@ -66,7 +72,8 @@ void bebop::snake2d::game::Game::run()
             snake.grow();
         }
 
-        snake.move(dt);
+        if (state != GameState::PAUSED)
+            snake.move(dt);
 
         window.clear(WINDOW_BACKGROUND_COLOR);
 
@@ -144,5 +151,5 @@ void bebop::snake2d::game::Game::restart()
         ++spawned;
     }
 
-    isGameOver = false;
+    state = GameState::PLAYING;
 }

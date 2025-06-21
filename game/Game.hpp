@@ -18,6 +18,13 @@ namespace bebop::snake2d::game
  */
 struct Game
 {
+    enum class GameState
+    {
+        PLAYING,
+        PAUSED,
+        GAME_OVER
+    };
+
     Game(int width, int height);
 
     /**
@@ -66,7 +73,7 @@ struct Game
     Snake snake;
     std::array<Fruit, FRUIT_COUNT> fruits;
 
-    bool isGameOver = false;
+    GameState state = GameState::PLAYING;
     int score = 0;
 
     render::XWindow window;
