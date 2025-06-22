@@ -168,4 +168,5 @@ void bebop::snake2d::game::Game::restart()
     }
 
     state = GameState::PLAYING;
+    score = 0;
 }
