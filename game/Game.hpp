@@ -4,11 +4,17 @@
 #include <chrono>
 #include <random>
 #include <thread>
+#include <memory>
 
-#include "../render/XWindow.hpp"
 #include "Fruit.hpp"
 #include "Snake.hpp"
 #include "Vec2.hpp"
+
+#ifdef PLATFOWM_WINDOWS
+
+#elif defined(PLATFORM_LINUX)
+    #include "../render/XWindow.hpp"
+#endif
 
 namespace bebop::snake2d::game
 {
@@ -81,7 +87,7 @@ struct Game
     GameState state = GameState::PLAYING;
     int score = 0;
 
-    render::XWindow window;
+    std::unique_ptr<render::IWindow> window;
 };
 
 }  // namespace bebop::snake2d::game

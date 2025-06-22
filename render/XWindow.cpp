@@ -16,30 +16,31 @@ bebop::snake2d::render::XWindow::XWindow(int width, int height, const char* titl
     gc = XCreateGC(display, window, 0, nullptr);
 
     // Create the backBuffer pixmap for double buffering
-    backBuffer = XCreatePixmap(display, window, width, height,
-                               DefaultDepth(display, screen));
+    backBuffer = XCreatePixmap(display, window, width, height, DefaultDepth(display, screen));
 
     // Create the XImage to map your pixels vector (if you use it for software rendering)
     ximage = XCreateImage(display, DefaultVisual(display, screen), DefaultDepth(display, screen),
-                          ZPixmap, 0, reinterpret_cast<char*>(pixels.data()),
-                          width, height, 32, 0);
+                          ZPixmap, 0, reinterpret_cast<char*>(pixels.data()), width, height, 32, 0);
 
     XMapWindow(display, window);
 }
 
 bebop::snake2d::render::XWindow::~XWindow()
 {
-     Display* display = xdisplay.get();
-    if (ximage) {
+    Display* display = xdisplay.get();
+    if (ximage)
+    {
         ximage->data = nullptr;
         XDestroyImage(ximage);
     }
 
-    if (backBuffer) {
+    if (backBuffer)
+    {
         XFreePixmap(display, backBuffer);
     }
 
-    if (gc) {
+    if (gc)
+    {
         XFreeGC(display, gc);
     }
 }
@@ -54,12 +55,16 @@ void bebop::snake2d::render::XWindow::processEvents(const KeyCallback& onKeyPres
         if (event.type == KeyPress)
         {
             KeySym keysym = XLookupKeysym(&event.xkey, 0);
-            if (keysym == XK_Escape)
-            {
-                open = false;
-                break;
-            }
-            onKeyPress(keysym);
+            Key key = keysym == XK_Escape  ? Key::ESCAPE
+                      : keysym == XK_Up    ? Key::UP
+                      : keysym == XK_Down  ? Key::DOWN
+                      : keysym == XK_Right ? Key::RIGHT
+                      : keysym == XK_Left  ? Key::LEFT
+                      : keysym == XK_r     ? Key::r
+                      : keysym == XK_p     ? Key::p
+                                           : Key::UNKNOWN;
+
+            onKeyPress(key);
         }
         else if (event.type == Expose)
         {
@@ -83,12 +88,18 @@ bool bebop::snake2d::render::XWindow::isOpen() const
     return open;
 }
 
+void bebop::snake2d::render::XWindow::close()
+{
+    open = false;
+}
+
 void bebop::snake2d::render::XWindow::clear(std::uint32_t color)
 {
     Display* display = xdisplay.get();
 
     XSetForeground(display, gc, color);
-    XFillRectangle(display, backBuffer, gc, 0, 0, width, height);}
+    XFillRectangle(display, backBuffer, gc, 0, 0, width, height);
+}
 
 void bebop::snake2d::render::XWindow::setPixel(int x, int y, std::uint32_t color)
 {
@@ -102,10 +113,12 @@ void bebop::snake2d::render::XWindow::drawCircle(int cx, int cy, int radius, std
     Display* display = xdisplay.get();
 
     XSetForeground(display, gc, color);
-    XFillArc(display, backBuffer, gc, cx - radius, cy - radius, radius * 2, radius * 2, 0, 360 * 64);
+    XFillArc(display, backBuffer, gc, cx - radius, cy - radius, radius * 2, radius * 2, 0,
+             360 * 64);
 }
 
-void bebop::snake2d::render::XWindow::drawText(int x, int y, const std::string& text, std::uint32_t color)
+void bebop::snake2d::render::XWindow::drawText(int x, int y, const std::string& text,
+                                               std::uint32_t color)
 {
     Display* display = xdisplay.get();
 

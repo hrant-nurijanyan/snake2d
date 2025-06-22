@@ -1,7 +1,7 @@
 #ifndef BEBOP_SNAKE_2D_GAME_FRUIT_HPP
 #define BEBOP_SNAKE_2D_GAME_FRUIT_HPP
 
-#include "../render/XWindow.hpp"
+#include "../render/IWindow.hpp"
 #include "Vec2.hpp"
 
 namespace bebop::snake2d::game
@@ -22,7 +22,7 @@ struct RenderFruit
      * @param fruit The fruit going to be rendered
      * @param window The window on which the fruit is going to be rendered
      */
-    static void render(const Fruit& fruit, render::XWindow& window);
+    static void render(const Fruit& fruit, render::IWindow& window);
 };
 }  // namespace bebop::snake2d::game
 

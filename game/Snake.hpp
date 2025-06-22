@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "../render/XWindow.hpp"
+#include "../render/IWindow.hpp"
 #include "Vec2.hpp"
 
 namespace bebop::snake2d::game
@@ -62,7 +62,7 @@ struct RenderSnake
      * @param snake The snake going to be rendered
      * @param window The window on which the snake is going to be rendered
      */
-    static void render(const Snake& snake, render::XWindow& window);
+    static void render(const Snake& snake, render::IWindow& window);
 
    private:
     static constexpr auto CIRCLE_RADIUS = 10;

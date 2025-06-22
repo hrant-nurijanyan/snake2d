@@ -1,8 +1,13 @@
 #include "Game.hpp"
 
 bebop::snake2d::game::Game::Game(int width, int height)
-    : width(width), height(height), snake({10, 10}, {1, 0}, 5), window(width, height, "Snake2d")
+    : width(width), height(height), snake({10, 10}, {1, 0}, 5)
 {
+#ifdef WIN32
+
+#elif defined(PLATFORM_LINUX)
+    window = std::make_unique<render::XWindow>(width, height, "Snake2D");
+#endif
     int spawned = 0;
     while (spawned < FRUIT_COUNT)
     {
@@ -15,45 +20,47 @@ void bebop::snake2d::game::Game::run()
 {
     auto lastTime = std::chrono::steady_clock::now();
 
-    while (window.isOpen())
+    while (window->isOpen())
     {
         auto now = std::chrono::steady_clock::now();
         float dt = std::chrono::duration<float>(now - lastTime).count();
         lastTime = now;
 
-        window.processEvents(
-            [&](KeySym key)
+        window->processEvents(
+            [&](render::Key key)
             {
                 switch (key)
                 {
-                    case XK_Up:
+                    case render::Key::UP:
                         snake.setDirection({0, -1});
                         break;
-                    case XK_Down:
+                    case render::Key::DOWN:
                         snake.setDirection({0, 1});
                         break;
-                    case XK_Left:
+                    case render::Key::LEFT:
                         snake.setDirection({-1, 0});
                         break;
-                    case XK_Right:
+                    case render::Key::RIGHT:
                         snake.setDirection({1, 0});
                         break;
-                    case XK_p:
+                    case render::Key::p:
                         state =
                             state == GameState::PLAYING ? GameState::PAUSED : GameState::PLAYING;
                         break;
-                    case XK_r:
+                    case render::Key::r:
                         if (state != GameState::GAME_OVER)
                             break;
                         restart();
                         break;
+                    case render::Key::ESCAPE:
+                        window->close();
                 }
             });
 
         if (state == GameState::GAME_OVER)
         {
             gameOver();
-            window.update();
+            window->update();
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
             continue;
         }
@@ -75,16 +82,16 @@ void bebop::snake2d::game::Game::run()
         if (state != GameState::PAUSED)
             snake.move(dt);
 
-        window.clear(WINDOW_BACKGROUND_COLOR);
+        window->clear(WINDOW_BACKGROUND_COLOR);
 
-        RenderSnake::render(snake, window);
+        RenderSnake::render(snake, *window);
 
         std::for_each(fruits.begin(), fruits.end(),
-                      [&](const auto& fruit) { RenderFruit::render(fruit, window); });
+                      [&](const auto& fruit) { RenderFruit::render(fruit, *window); });
 
         showScore();
 
-        window.update();
+        window->update();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));  // ~60 FPS
     }
@@ -134,18 +141,18 @@ void bebop::snake2d::game::Game::showScore()
     int textX = width - 200;
     int textY = 10;
 
-    window.drawText(textX, textY, scoreText, TEXT_COLOR);
+    window->drawText(textX, textY, scoreText, TEXT_COLOR);
 }
 
 void bebop::snake2d::game::Game::gameOver()
 {
-    window.clear(GAME_OVER_BACKGROUND_COLOR);
+    window->clear(GAME_OVER_BACKGROUND_COLOR);
 
     constexpr const char* text = "Game Over! Press R to Restart";
     int textX = width / 2 - 200;
     int textY = height / 2;
 
-    window.drawText(textX, textY, text, TEXT_COLOR);
+    window->drawText(textX, textY, text, TEXT_COLOR);
 }
 
 void bebop::snake2d::game::Game::restart()

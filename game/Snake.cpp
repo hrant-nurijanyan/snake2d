@@ -59,7 +59,7 @@ void bebop::snake2d::game::Snake::grow()
     segments.emplace_back(tail);
 }
 
-void bebop::snake2d::game::RenderSnake::render(const Snake& snake, render::XWindow& window)
+void bebop::snake2d::game::RenderSnake::render(const Snake& snake, render::IWindow& window)
 {
     // Render the head
     Vec2 head{snake.head().x * CIRCLE_RADIUS * 2, snake.head().y * CIRCLE_RADIUS * 2};
