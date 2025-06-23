@@ -3,8 +3,8 @@
 bebop::snake2d::game::Game::Game(int width, int height)
     : width(width), height(height), snake({10, 10}, {1, 0}, 5)
 {
-#ifdef WIN32
-
+#ifdef PLATFORM_WINDOWS
+    window = std::make_unique<render::Win32Window>(width, height, "Snake2D");
 #elif defined(PLATFORM_LINUX)
     window = std::make_unique<render::XWindow>(width, height, "Snake2D");
 #endif

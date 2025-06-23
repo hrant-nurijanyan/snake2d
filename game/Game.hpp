@@ -5,13 +5,14 @@
 #include <random>
 #include <thread>
 #include <memory>
+#include <array>
 
 #include "Fruit.hpp"
 #include "Snake.hpp"
 #include "Vec2.hpp"
 
-#ifdef PLATFOWM_WINDOWS
-
+#ifdef PLATFORM_WINDOWS
+    #include "../render/Win32Window.hpp"
 #elif defined(PLATFORM_LINUX)
     #include "../render/XWindow.hpp"
 #endif

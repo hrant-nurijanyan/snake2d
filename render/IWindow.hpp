@@ -65,7 +65,7 @@ struct IWindow
     virtual void close() = 0;
 
     /**
-     * Boolean reporthing whether the window is still open... used in loops
+     * Boolean reporting whether the window is still open... used in loops
      */
     virtual bool isOpen() const = 0;
 };

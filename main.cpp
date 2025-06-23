@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include "game/Game.hpp"
-#include "render/XWindow.hpp"
 
 int main()
 {
